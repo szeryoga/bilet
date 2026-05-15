@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Билет</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="ticket-page">
+    <main class="ticket-shell">
+      <section class="ticket-screen" aria-label="Билет">
+        <a class="back-hitbox" href="index.html" aria-label="Вернуться на страницу настройки"></a>
+        <div class="ticket-overlay ticket-route" id="ticket-route"></div>
+        <div class="ticket-overlay ticket-direction" id="ticket-direction"></div>
+        <div class="ticket-overlay ticket-purchased" id="ticket-purchased"></div>
+
+        <button class="qr-hitbox" id="qr-hitbox" type="button" aria-label="Показать анимацию QR-кода">
+          <img class="qr-animation" id="qr-animation" src="" alt="">
+        </button>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

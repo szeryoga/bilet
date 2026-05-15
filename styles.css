@@ -1,0 +1,200 @@
+:root {
+  --bg: #28283d;
+  --panel: #33324a;
+  --panel-2: #3b3956;
+  --text: #ffffff;
+  --muted: #d9d9e5;
+  --line: #42415e;
+  --button: #f3f4f8;
+  --button-text: #26263a;
+  --screen-width: min(100vw, 591px);
+  --screen-height: calc(var(--screen-width) * 1209 / 591);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+body {
+  min-height: 100svh;
+}
+
+.setup-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.setup-shell {
+  width: min(100%, 460px);
+}
+
+.setup-card {
+  background: linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
+  border-radius: 28px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+  padding: 28px 22px 22px;
+}
+
+.setup-title {
+  margin: 0 0 20px;
+  font-size: 32px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.setup-form {
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--muted);
+}
+
+.field-input {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1.2;
+  padding: 16px 14px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.field-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.primary-button {
+  margin-top: 10px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--button);
+  color: var(--button-text);
+  font: inherit;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 16px 18px;
+}
+
+.ticket-page {
+  display: flex;
+  justify-content: center;
+  background: #28283d;
+}
+
+.ticket-shell {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.ticket-screen {
+  position: relative;
+  width: var(--screen-width);
+  height: var(--screen-height);
+  background: url("img/background.png") center top / 100% 100% no-repeat;
+  overflow: hidden;
+}
+
+.back-hitbox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(200 / 591 * 100%);
+  height: calc(72 / 1209 * 100%);
+  z-index: 3;
+}
+
+.ticket-overlay {
+  position: absolute;
+  left: calc(24 / 591 * 100%);
+  right: calc(24 / 591 * 100%);
+  color: #ffffff;
+  letter-spacing: 0;
+  z-index: 2;
+}
+
+.ticket-route {
+  top: calc(110 / 1209 * 100%);
+  font-size: calc(var(--screen-width) * 25 / 591);
+  line-height: 1.12;
+  font-weight: 700;
+}
+
+.ticket-direction {
+  top: calc((158 / 1209 * 100%) + 6px);
+  left: calc((24 / 591 * 100%) + 1px);
+  font-size: calc(var(--screen-width) * 18 / 591);
+  line-height: 1.17;
+  font-weight: 400;
+  color: #dee0ef;
+  max-width: calc(520 / 591 * 100%);
+}
+
+.ticket-purchased {
+  top: calc((735 / 1209 * 100%) - 5px);
+  font-size: calc(var(--screen-width) * 15.12 / 591);
+  line-height: 1.18;
+  color: #a9a7ba;
+  font-weight: 400;
+  right: calc(188 / 591 * 100%);
+}
+
+.qr-hitbox {
+  position: absolute;
+  left: calc(23 / 591 * 100%);
+  top: calc(326 / 1209 * 100%);
+  width: calc(544 / 591 * 100%);
+  height: calc(209 / 1209 * 100%);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.qr-animation {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.qr-animation.is-visible {
+  display: block;
+}
+
+@media (max-width: 591px) {
+  .setup-page {
+    align-items: flex-start;
+    padding: max(16px, env(safe-area-inset-top)) 12px 20px;
+  }
+
+  .setup-card {
+    border-radius: 22px;
+    padding: 24px 18px 18px;
+  }
+}

@@ -1,0 +1,17 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Local tooling state
+.codex/
+.agents/
+
+# Local review artifacts
+scr.jpg
+
+# Generated GIF drafts outside production assets
+gifs/
+qr_spin*.gif

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Настройка билета</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="setup-page">
+    <main class="setup-shell">
+      <section class="setup-card">
+        <h1 class="setup-title">Поехали!</h1>
+        <form class="setup-form" id="ticket-form" action="ticket.html">
+          <label class="field">
+            <span class="field-label">Откуда</span>
+            <input class="field-input" id="from" name="from" type="text" placeholder="Девяткино" autocomplete="off">
+          </label>
+
+          <label class="field">
+            <span class="field-label">Куда</span>
+            <input class="field-input" id="to" name="to" type="text" placeholder="Кавголово" autocomplete="off">
+          </label>
+
+          <label class="field">
+            <span class="field-label">Дата</span>
+            <input class="field-input" id="date" name="date" type="date">
+          </label>
+
+          <label class="field">
+            <span class="field-label">Номер</span>
+            <input class="field-input" id="number" name="number" type="text" value="№ ПД 361339070" autocomplete="off">
+          </label>
+
+          <button class="primary-button" type="submit">Билет</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
