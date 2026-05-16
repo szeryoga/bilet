@@ -129,6 +129,7 @@
     }
 
     qrHitbox.addEventListener("click", function () {
+      qrHitbox.classList.add("is-animating");
       qrAnimation.src = "img/qr_spin.gif?ts=" + Date.now();
       qrAnimation.classList.add("is-visible");
 
@@ -136,6 +137,7 @@
       qrAnimation._hideTimer = window.setTimeout(function () {
         qrAnimation.classList.remove("is-visible");
         qrAnimation.removeAttribute("src");
+        qrHitbox.classList.remove("is-animating");
       }, 1550);
     });
   }

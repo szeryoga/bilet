@@ -169,18 +169,36 @@ body {
   position: absolute;
   left: calc(23 / 591 * 100%);
   top: calc(326 / 1209 * 100%);
-  width: calc(544 / 591 * 100%);
-  height: calc(209 / 1209 * 100%);
+  width: calc(545 / 591 * 100%);
+  height: calc(210 / 1209 * 100%);
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.qr-static,
+.qr-animation {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.qr-static {
+  z-index: 1;
 }
 
 .qr-animation {
   display: none;
-  width: 100%;
-  height: 100%;
+  z-index: 2;
+}
+
+.qr-hitbox.is-animating .qr-static {
+  display: none;
 }
 
 .qr-animation.is-visible {
