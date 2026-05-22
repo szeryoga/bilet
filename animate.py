@@ -7,8 +7,9 @@ from PIL import Image
 
 SRC = Path("img/qr.png")
 BACKGROUND = (0x35, 0x35, 0x4F, 255)
-FRAME_COUNT = 48
+FRAME_COUNT = 32
 MIN_SCALE = 0.03
+GIF_COLORS = 4
 
 
 def parse_duration_ms() -> int:
@@ -40,10 +41,10 @@ def build_frames(img: Image.Image, duration_ms: int) -> tuple[list[Image.Image],
         draw_width = max(1, round(width * scale_x))
         offset_x = (width - draw_width) // 2
 
-        resized = source.resize((draw_width, height), Image.LANCZOS)
+        resized = source.resize((draw_width, height), Image.NEAREST)
         frame = Image.new("RGBA", (width, height), BACKGROUND)
         frame.alpha_composite(resized, (offset_x, 0))
-        frames.append(frame.convert("P", palette=Image.ADAPTIVE))
+        frames.append(frame.convert("P", palette=Image.ADAPTIVE, colors=GIF_COLORS))
         delays.append(max(1, base_delay + (1 if frame_index < extra_delay else 0)) * 10)
 
     return frames, delays
@@ -64,7 +65,7 @@ def main() -> None:
         append_images=frames[1:],
         duration=delays,
         disposal=2,
-        optimize=False,
+        optimize=True,
     )
 
     print(f"Сохранено: {out}")
