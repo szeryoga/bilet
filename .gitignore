@@ -14,4 +14,4 @@ scr.jpg
 
 # Generated GIF drafts outside production assets
 gifs/
-qr_spin*.gif
+#qr_spin*.gif
