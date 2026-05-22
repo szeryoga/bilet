@@ -139,18 +139,46 @@
     if (!qrHitbox || !qrAnimation) {
       return;
     }
+    var animationUrl = "img/" + animationGif;
+    var preloadImage = new Image();
+    var animationToken = 0;
 
-    qrHitbox.addEventListener("click", function () {
-      qrHitbox.classList.add("is-animating");
-      qrAnimation.src = "img/" + animationGif + "?ts=" + Date.now();
-      qrAnimation.classList.add("is-visible");
+    function stopAnimation() {
+      window.clearTimeout(qrAnimation._hideTimer);
+      qrAnimation.classList.remove("is-visible");
+      qrAnimation.removeAttribute("src");
+      qrHitbox.classList.remove("is-animating");
+    }
 
+    function armHideTimer(token) {
       window.clearTimeout(qrAnimation._hideTimer);
       qrAnimation._hideTimer = window.setTimeout(function () {
-        qrAnimation.classList.remove("is-visible");
-        qrAnimation.removeAttribute("src");
-        qrHitbox.classList.remove("is-animating");
+        if (token !== animationToken) {
+          return;
+        }
+        stopAnimation();
       }, animationMs + 80);
+    }
+
+    preloadImage.src = animationUrl;
+
+    qrAnimation.addEventListener("load", function () {
+      qrHitbox.classList.add("is-animating");
+      qrAnimation.classList.add("is-visible");
+      armHideTimer(animationToken);
+    });
+
+    qrHitbox.addEventListener("click", function () {
+      animationToken += 1;
+      stopAnimation();
+      void qrAnimation.offsetWidth;
+      qrAnimation.src = animationUrl;
+
+      if (qrAnimation.complete) {
+        qrHitbox.classList.add("is-animating");
+        qrAnimation.classList.add("is-visible");
+        armHideTimer(animationToken);
+      }
     });
   }
 
