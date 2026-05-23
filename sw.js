@@ -1,4 +1,4 @@
-const CACHE_NAME = "bilet-pwa-v3";
+const CACHE_NAME = "bilet-pwa-v4";
 const BASE_PATH = new URL("./", self.location.href).pathname.replace(/\/+$/, "");
 const ROOT = BASE_PATH || "";
 const ASSETS = [
@@ -11,8 +11,7 @@ const ASSETS = [
   `${ROOT}/img/background.png`,
   `${ROOT}/img/qr.png`,
   `${ROOT}/img/pwa-192.png`,
-  `${ROOT}/img/pwa-512.png`,
-  `${ROOT}/img/qr_spin_1000.gif`
+  `${ROOT}/img/pwa-512.png`
 ];
 
 self.addEventListener("install", (event) => {

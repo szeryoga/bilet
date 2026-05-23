@@ -1,7 +1,9 @@
 (function () {
   var STORAGE_KEY = "ticket-config";
   var DEFAULT_NUMBER = "№ ПД 361339070";
-  var DEFAULT_ANIMATION_GIF = "qr_spin_1000.gif";
+  var QR_ANIMATION_MS = 1000;
+  var QR_MIN_SCALE = 0.03;
+  var QR_BG = "#35354f";
 
   function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) {
@@ -114,9 +116,6 @@
     var to = config.to || "Кавголово";
     var dateLabel = formatDate(config.date || todayIso());
     var number = config.number || DEFAULT_NUMBER;
-    var animationGif = DEFAULT_ANIMATION_GIF;
-    var animationMsMatch = animationGif.match(/qr_spin_(\d+)\.gif$/);
-    var animationMs = animationMsMatch ? Number(animationMsMatch[1]) : 1500;
 
     if (urlConfig.from || urlConfig.to || urlConfig.date || urlConfig.number) {
       config = {
@@ -143,39 +142,95 @@
     if (!qrHitbox || !qrAnimationLayer) {
       return;
     }
-    var animationUrl = "img/" + animationGif;
-    var animationToken = 0;
+    var animationFrameId = 0;
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
+    var qrImage = new Image();
+    var mirroredCanvas = document.createElement("canvas");
+    var mirroredContext = mirroredCanvas.getContext("2d");
+    var isReady = false;
+
+    canvas.className = "qr-animation-canvas";
+    qrAnimationLayer.appendChild(canvas);
+
+    function prepareImages() {
+      var width = qrImage.naturalWidth || qrImage.width;
+      var height = qrImage.naturalHeight || qrImage.height;
+
+      canvas.width = width;
+      canvas.height = height;
+      mirroredCanvas.width = width;
+      mirroredCanvas.height = height;
+      mirroredContext.setTransform(1, 0, 0, 1, 0, 0);
+      mirroredContext.clearRect(0, 0, width, height);
+      mirroredContext.translate(width, 0);
+      mirroredContext.scale(-1, 1);
+      mirroredContext.drawImage(qrImage, 0, 0);
+      isReady = true;
+    }
+
+    qrImage.addEventListener("load", prepareImages);
+    qrImage.src = "img/qr.png";
 
     function stopAnimation() {
-      window.clearTimeout(qrHitbox._hideTimer);
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
+      }
       qrHitbox.classList.remove("is-animating");
-      while (qrAnimationLayer.firstChild) {
-        qrAnimationLayer.removeChild(qrAnimationLayer.firstChild);
+      if (isReady) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
 
-    function armHideTimer(token) {
-      window.clearTimeout(qrHitbox._hideTimer);
-      qrHitbox._hideTimer = window.setTimeout(function () {
-        if (token !== animationToken) {
-          return;
-        }
-        stopAnimation();
-      }, animationMs + 80);
+    function drawFrame(progress) {
+      var theta = progress * Math.PI * 2;
+      var width = canvas.width;
+      var height = canvas.height;
+      var source = Math.cos(theta) >= 0 ? qrImage : mirroredCanvas;
+      var scaleX = Math.max(Math.abs(Math.cos(theta)), QR_MIN_SCALE);
+      var drawWidth = Math.max(1, Math.round(width * scaleX));
+      var offsetX = Math.floor((width - drawWidth) / 2);
+
+      context.fillStyle = QR_BG;
+      context.fillRect(0, 0, width, height);
+      context.imageSmoothingEnabled = false;
+      context.drawImage(source, offsetX, 0, drawWidth, height);
     }
 
-    qrHitbox.addEventListener("click", function () {
-      animationToken += 1;
+    function startAnimation() {
+      var startTime = 0;
+
       stopAnimation();
       qrHitbox.classList.add("is-animating");
 
-      var animationImage = document.createElement("img");
-      animationImage.className = "qr-animation";
-      animationImage.alt = "";
-      animationImage.src = animationUrl + "?play=" + animationToken;
-      qrAnimationLayer.appendChild(animationImage);
+      function step(timestamp) {
+        var elapsed;
+        var progress;
 
-      armHideTimer(animationToken);
+        if (!startTime) {
+          startTime = timestamp;
+        }
+
+        elapsed = timestamp - startTime;
+        progress = Math.min(elapsed / QR_ANIMATION_MS, 1);
+        drawFrame(progress);
+
+        if (progress < 1) {
+          animationFrameId = window.requestAnimationFrame(step);
+        } else {
+          stopAnimation();
+        }
+      }
+
+      animationFrameId = window.requestAnimationFrame(step);
+    }
+
+    qrHitbox.addEventListener("click", function () {
+      if (!isReady) {
+        return;
+      }
+      startAnimation();
     });
   }
 
