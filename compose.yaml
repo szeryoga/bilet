@@ -4,6 +4,8 @@ services:
     build:
       context: .
     restart: unless-stopped
+    volumes:
+      - .:/app
     expose:
       - "8000"
     networks:
