@@ -1,0 +1,15 @@
+services:
+  bilet-frontend:
+    container_name: bilet-frontend
+    build:
+      context: .
+    restart: unless-stopped
+    expose:
+      - "8000"
+    networks:
+      - gateway
+
+networks:
+  gateway:
+    external: true
+    name: ${GATEWAY_NETWORK:-gateway-net}
