@@ -89,10 +89,6 @@ body {
   color: rgba(255, 255, 255, 0.45);
 }
 
-.field-select {
-  cursor: pointer;
-}
-
 .primary-button {
   margin-top: 10px;
   border: 0;
@@ -184,7 +180,8 @@ body {
 }
 
 .qr-static,
-.qr-animation {
+.qr-animation,
+.qr-animation-layer {
   display: block;
   width: 100%;
   height: 100%;
@@ -196,8 +193,7 @@ body {
   z-index: 1;
 }
 
-.qr-animation {
-  display: none;
+.qr-animation-layer {
   z-index: 2;
 }
 
@@ -205,8 +201,8 @@ body {
   display: none;
 }
 
-.qr-animation.is-visible {
-  display: block;
+.qr-animation {
+  z-index: 2;
 }
 
 @media (max-width: 591px) {

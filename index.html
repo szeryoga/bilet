@@ -3,7 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#28283d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Билет">
     <title>Настройка билета</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="img/pwa-192.png">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body class="setup-page">
@@ -29,23 +35,6 @@
           <label class="field">
             <span class="field-label">Номер</span>
             <input class="field-input" id="number" name="number" type="text" value="№ ПД 361339070" autocomplete="off">
-          </label>
-
-          <label class="field">
-            <span class="field-label">GIF</span>
-            <select class="field-input field-select" id="animation-gif" name="animationGif">
-              <option value="qr_spin_1000.gif">qr_spin_1000</option>
-              <option value="qr_spin_1100.gif">qr_spin_1100</option>
-              <option value="qr_spin_1200.gif">qr_spin_1200</option>
-              <option value="qr_spin_1300.gif">qr_spin_1300</option>
-              <option value="qr_spin_1400.gif">qr_spin_1400</option>
-              <option value="qr_spin_1500.gif" selected>qr_spin_1500</option>
-              <option value="qr_spin_1600.gif">qr_spin_1600</option>
-              <option value="qr_spin_1700.gif">qr_spin_1700</option>
-              <option value="qr_spin_1800.gif">qr_spin_1800</option>
-              <option value="qr_spin_1900.gif">qr_spin_1900</option>
-              <option value="qr_spin_2000.gif">qr_spin_2000</option>
-            </select>
           </label>
 
           <button class="primary-button" type="submit">Билет</button>

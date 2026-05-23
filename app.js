@@ -1,7 +1,19 @@
 (function () {
   var STORAGE_KEY = "ticket-config";
   var DEFAULT_NUMBER = "№ ПД 361339070";
-  var DEFAULT_ANIMATION_GIF = "qr_spin_1500.gif";
+  var DEFAULT_ANIMATION_GIF = "qr_spin_1000.gif";
+
+  function registerServiceWorker() {
+    if (!("serviceWorker" in navigator)) {
+      return;
+    }
+
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {
+        return;
+      });
+    });
+  }
 
   function pad(value) {
     return String(value).padStart(2, "0");
@@ -40,7 +52,6 @@
       to: params.get("to") || "",
       date: params.get("date") || "",
       number: params.get("number") || "",
-      animationGif: params.get("animationGif") || "",
     };
   }
 
@@ -73,7 +84,6 @@
       to: document.getElementById("to"),
       date: document.getElementById("date"),
       number: document.getElementById("number"),
-      animationGif: document.getElementById("animation-gif"),
     };
 
     var config = readConfig();
@@ -81,7 +91,6 @@
     fields.to.value = config.to || "";
     fields.date.value = config.date || todayIso();
     fields.number.value = config.number || DEFAULT_NUMBER;
-    fields.animationGif.value = config.animationGif || DEFAULT_ANIMATION_GIF;
 
     form.addEventListener("submit", function () {
       writeConfig({
@@ -89,7 +98,6 @@
         to: fields.to.value.trim(),
         date: fields.date.value || todayIso(),
         number: fields.number.value.trim() || DEFAULT_NUMBER,
-        animationGif: fields.animationGif.value || DEFAULT_ANIMATION_GIF,
       });
     });
   }
@@ -106,26 +114,22 @@
     var to = config.to || "Кавголово";
     var dateLabel = formatDate(config.date || todayIso());
     var number = config.number || DEFAULT_NUMBER;
-    var animationGif = config.animationGif || DEFAULT_ANIMATION_GIF;
+    var animationGif = DEFAULT_ANIMATION_GIF;
     var animationMsMatch = animationGif.match(/qr_spin_(\d+)\.gif$/);
     var animationMs = animationMsMatch ? Number(animationMsMatch[1]) : 1500;
 
-    if (urlConfig.from || urlConfig.to || urlConfig.date || urlConfig.number || urlConfig.animationGif) {
+    if (urlConfig.from || urlConfig.to || urlConfig.date || urlConfig.number) {
       config = {
         from: urlConfig.from || config.from,
         to: urlConfig.to || config.to,
         date: urlConfig.date || config.date,
         number: urlConfig.number || config.number,
-        animationGif: urlConfig.animationGif || config.animationGif,
       };
       writeConfig(config);
       from = config.from || "Девяткино";
       to = config.to || "Кавголово";
       dateLabel = formatDate(config.date || todayIso());
       number = config.number || DEFAULT_NUMBER;
-      animationGif = config.animationGif || DEFAULT_ANIMATION_GIF;
-      animationMsMatch = animationGif.match(/qr_spin_(\d+)\.gif$/);
-      animationMs = animationMsMatch ? Number(animationMsMatch[1]) : 1500;
     }
 
     document.getElementById("ticket-route").textContent = from + " - " + to;
@@ -135,24 +139,24 @@
       "Куплен " + dateLabel + " - " + number;
 
     var qrHitbox = document.getElementById("qr-hitbox");
-    var qrAnimation = document.getElementById("qr-animation");
-    if (!qrHitbox || !qrAnimation) {
+    var qrAnimationLayer = document.getElementById("qr-animation-layer");
+    if (!qrHitbox || !qrAnimationLayer) {
       return;
     }
     var animationUrl = "img/" + animationGif;
-    var preloadImage = new Image();
     var animationToken = 0;
 
     function stopAnimation() {
-      window.clearTimeout(qrAnimation._hideTimer);
-      qrAnimation.classList.remove("is-visible");
-      qrAnimation.removeAttribute("src");
+      window.clearTimeout(qrHitbox._hideTimer);
       qrHitbox.classList.remove("is-animating");
+      while (qrAnimationLayer.firstChild) {
+        qrAnimationLayer.removeChild(qrAnimationLayer.firstChild);
+      }
     }
 
     function armHideTimer(token) {
-      window.clearTimeout(qrAnimation._hideTimer);
-      qrAnimation._hideTimer = window.setTimeout(function () {
+      window.clearTimeout(qrHitbox._hideTimer);
+      qrHitbox._hideTimer = window.setTimeout(function () {
         if (token !== animationToken) {
           return;
         }
@@ -160,28 +164,22 @@
       }, animationMs + 80);
     }
 
-    preloadImage.src = animationUrl;
-
-    qrAnimation.addEventListener("load", function () {
-      qrHitbox.classList.add("is-animating");
-      qrAnimation.classList.add("is-visible");
-      armHideTimer(animationToken);
-    });
-
     qrHitbox.addEventListener("click", function () {
       animationToken += 1;
       stopAnimation();
-      void qrAnimation.offsetWidth;
-      qrAnimation.src = animationUrl;
+      qrHitbox.classList.add("is-animating");
 
-      if (qrAnimation.complete) {
-        qrHitbox.classList.add("is-animating");
-        qrAnimation.classList.add("is-visible");
-        armHideTimer(animationToken);
-      }
+      var animationImage = document.createElement("img");
+      animationImage.className = "qr-animation";
+      animationImage.alt = "";
+      animationImage.src = animationUrl + "?play=" + animationToken;
+      qrAnimationLayer.appendChild(animationImage);
+
+      armHideTimer(animationToken);
     });
   }
 
+  registerServiceWorker();
   setupPage();
   ticketPage();
 })();
