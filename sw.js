@@ -1,4 +1,4 @@
-const CACHE_NAME = "bilet-pwa-v4";
+const CACHE_NAME = "bilet-pwa-v5";
 const BASE_PATH = new URL("./", self.location.href).pathname.replace(/\/+$/, "");
 const ROOT = BASE_PATH || "";
 const ASSETS = [

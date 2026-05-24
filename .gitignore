@@ -15,3 +15,6 @@ scr.jpg
 # Generated GIF drafts outside production assets
 gifs/
 #qr_spin*.gif
+
+# Local certificates and private keys
+secrets/
