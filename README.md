@@ -101,7 +101,7 @@ server {
 
 ```yaml
 volumes:
-  - /home/szeryoga/devel/bilet/secrets/client-ca/ca.crt:/etc/nginx/client-ca/bilet-client-ca.crt:ro
+  - ./secrets/client-ca/ca.crt:/etc/nginx/client-ca/bilet-client-ca.crt:ro
 ```
 
 После правок `routes.yml`, `generate_nginx_conf.py` и `compose.yaml` у `gateway`:

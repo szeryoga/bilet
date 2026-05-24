@@ -1,4 +1,4 @@
-const CACHE_NAME = "bilet-pwa-v5";
+const CACHE_NAME = "bilet-pwa-v6";
 const BASE_PATH = new URL("./", self.location.href).pathname.replace(/\/+$/, "");
 const ROOT = BASE_PATH || "";
 const ASSETS = [
@@ -13,6 +13,17 @@ const ASSETS = [
   `${ROOT}/img/pwa-192.png`,
   `${ROOT}/img/pwa-512.png`
 ];
+
+function matchFirst(candidates) {
+  return candidates.reduce(function (chain, candidate) {
+    return chain.then(function (cached) {
+      if (cached) {
+        return cached;
+      }
+      return caches.match(candidate);
+    });
+  }, Promise.resolve(null));
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -48,14 +59,22 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) {
-        return cached;
-      }
+  const cacheCandidates = [event.request];
+  if (url.search) {
+    cacheCandidates.push(`${url.pathname}`);
+  }
 
-      return fetch(event.request)
-        .then((response) => {
+  event.respondWith(
+    matchFirst(cacheCandidates)
+      .then((cached) => {
+        if (cached) {
+          return cached;
+        }
+        return null;
+      })
+      .then((cached) =>
+        cached ||
+        fetch(event.request).then((response) => {
           if (!response || response.status !== 200 || response.type !== "basic") {
             return response;
           }
@@ -64,12 +83,14 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           return response;
         })
-        .catch(() => {
-          if (event.request.mode === "navigate") {
-            return caches.match(`${ROOT}/index.html`);
-          }
-          return caches.match(event.request);
-        });
-    })
+      )
+      .catch(() => {
+        if (event.request.mode === "navigate") {
+          return matchFirst([`${url.pathname}`, `${ROOT}/index.html`]).then(
+            (cached) => cached || Response.error()
+          );
+        }
+        return matchFirst(cacheCandidates).then((cached) => cached || Response.error());
+      })
   );
 });
